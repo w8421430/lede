@@ -66,6 +66,7 @@ jobs:
 
       - name: Download packages
         run: make download -j16
+             cat .config
 
       - name: Compile firmware
         run: |
