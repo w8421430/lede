@@ -9,6 +9,12 @@ name: OpenWrt-CI
 
 on:
   workflow_dispatch:
+  
+env:
+  FEEDS_CONF: feeds.conf.default
+  CONFIG_FILE: gy.config
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part2.sh
 
 permissions:
   contents: read
@@ -55,18 +61,30 @@ jobs:
           large-packages: true
           swap-storage: true
 
+      - name: Load custom feeds
+        run: |
+          [ -e $FEEDS_CONF ] && mv $FEEDS_CONF feeds.conf.default
+          chmod +x $DIY_P1_SH
+          ../$DIY_P1_SH
+        
       - name: Update feeds
         run: |
           sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
+      - name: Load custom configuration
+        run: |
+          [ -e files ] && mv files files
+          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE .config
+          chmod +x $DIY_P2_SH
+          ../$DIY_P2_SH
+        
       - name: Generate configuration file
         run: make defconfig
 
       - name: Download packages
         run: make download -j16
-             cat .config
 
       - name: Compile firmware
         run: |
