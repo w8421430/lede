@@ -63,9 +63,8 @@ jobs:
 
       - name: Load custom feeds
         run: |
-          [ -e $FEEDS_CONF ] && mv $FEEDS_CONF feeds.conf.default
           chmod +x $DIY_P1_SH
-          ../$DIY_P1_SH
+          ./$DIY_P1_SH
         
       - name: Update feeds
         run: |
@@ -75,10 +74,9 @@ jobs:
 
       - name: Load custom configuration
         run: |
-          [ -e files ] && mv files files
           [ -e $CONFIG_FILE ] && mv $CONFIG_FILE .config
           chmod +x $DIY_P2_SH
-          ../$DIY_P2_SH
+          ./$DIY_P2_SH
         
       - name: Generate configuration file
         run: make defconfig
